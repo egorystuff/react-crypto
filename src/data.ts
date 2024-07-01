@@ -1,4 +1,4 @@
-type CryptoType = {
+export type CryptoType = {
   id: string;
   icon: string;
   name: string;
@@ -30,12 +30,12 @@ type CryptoMetaData = {
   hasNextPage: boolean;
 };
 
-type CryptoData = {
+export type CryptoData = {
   result: CryptoType[];
   meta: CryptoMetaData;
 };
 
-type CryptoAssetsData = {
+export type CryptoAssetsData = {
   id: string;
   amount: number;
   price: number;

@@ -36,6 +36,10 @@ export type CryptoData = {
 };
 
 export type CryptoAssetsData = {
+  growPercent?: number;
+  totalProfit?: number;
+  grow?: boolean;
+  totalAmount?: number;
   id: string;
   amount: number;
   price: number;
@@ -664,6 +668,12 @@ export const cryptoAssets: CryptoAssetsData[] = [
     id: "ethereum",
     amount: 5,
     price: 2400,
+    date: new Date(),
+  },
+  {
+    id: "solana",
+    amount: 10,
+    price: 52.7035752645126,
     date: new Date(),
   },
 ];

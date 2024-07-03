@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import Sider from "antd/es/layout/Sider";
-import { Card, List, Space, Spin, Statistic, Typography } from "antd";
+import { Card, List, Space, Statistic, Tag, Typography } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
-import { fakeFetchCryptoData, fetchAssets } from "../../api";
-import { CryptoAssetsData, CryptoType } from "../../data";
-import { percentDifference } from "../../utils";
+import { capitalize } from "../../utils";
+import CryptoContext from "../../context/crypto-context";
 
 // -------------------------------------------------------------------------------------------
 
@@ -15,54 +14,12 @@ const siderStyle: React.CSSProperties = {
   backgroundColor: "#001529",
 };
 
-const data = [
-  "Racing car sprays burning fuel into crowd.",
-  "Japanese princess to wed commoner.",
-  "Australian walks 100km after outback crash.",
-  "Man charged over missing wedding girl.",
-  "Los Angeles battles huge wildfires.",
-];
-
 // -------------------------------------------------------------------------------------------
 
 export const AppSider = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [crypto, setCrypto] = useState<CryptoType[]>([]);
-  const [assets, setAssets] = useState<CryptoAssetsData[]>([]);
-
-  useEffect(() => {
-    async function preload() {
-      setLoading(true);
-      const { result } = await fakeFetchCryptoData();
-      const assets = await fetchAssets();
-
-      setAssets(
-        assets.map((asset) => {
-          const coin = result.find((c) => c.id === asset.id);
-
-          return {
-            grow: asset.price < (coin?.price ?? 0),
-            growPercent: percentDifference(coin?.price ?? 0, asset.price),
-            totalAmount: asset.amount * (coin?.price ?? 0),
-            totalProfit: asset.amount * (asset.price - (coin?.price ?? 0) - asset.amount * asset.price),
-            ...asset,
-          };
-        }),
-      );
-
-      setCrypto(result);
-
-      setLoading(false);
-    }
-
-    preload();
-  }, []);
+  const { assets } = useContext(CryptoContext);
 
   // -------------------------------------------------------------------------------------------
-
-  if (loading) {
-    return <Spin size='large' fullscreen />;
-  }
 
   return (
     <Sider width='25%' style={siderStyle}>
@@ -70,36 +27,38 @@ export const AppSider = () => {
         {assets.map((asset) => (
           <Card key={asset.id} title='Default size card' extra={<a href='#'>More</a>} style={{ width: 350 }}>
             <Statistic
-              title='Active'
-              value={11.28}
+              title={capitalize(asset.id)}
+              value={asset.totalAmount}
               precision={2}
-              valueStyle={{ color: "#3f8600" }}
-              prefix={<ArrowUpOutlined />}
-              suffix='%'
+              valueStyle={{ color: asset.grow ? "#3f8600" : "#cf1322" }}
+              prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+              suffix='$'
             />
 
             <List
               size='small'
-              dataSource={data}
+              dataSource={[
+                { title: "Total Profit", value: asset.totalProfit, withTag: true },
+                { title: "Asset Amount", value: asset.amount, isPlain: true },
+                // { title: "Difference", value: asset.growPercent },
+              ]}
               renderItem={(item) => (
                 <List.Item>
-                  <Typography.Text mark>[ITEM]</Typography.Text> {item}
+                  <span>{item.title}</span>
+                  <span>
+                    {item.withTag && <Tag color={asset.grow ? "green" : "red"}>{asset.growPercent}% </Tag>}
+                    {item.isPlain ? item.value : null}
+                    {!item.isPlain && (
+                      <Typography.Text type={asset.grow ? "success" : "danger"}>
+                        {item.value?.toFixed(2)} $
+                      </Typography.Text>
+                    )}
+                  </span>
                 </List.Item>
               )}
             />
           </Card>
         ))}
-
-        {/* <Card title='Default size card' extra={<a href='#'>More</a>} style={{ width: 300 }}>
-          <Statistic
-            title='Idle'
-            value={9.3}
-            precision={2}
-            valueStyle={{ color: "#cf1322" }}
-            prefix={<ArrowDownOutlined />}
-            suffix='%'
-          />
-        </Card> */}
       </Space>
     </Sider>
   );

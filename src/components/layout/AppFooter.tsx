@@ -7,6 +7,6 @@ const footerStyle: React.CSSProperties = {
   backgroundColor: "#4096ff",
 };
 
-export const AppFooter = () => {
+export const AppFooter: React.FC = () => {
   return <Footer style={footerStyle}>Footer</Footer>;
 };

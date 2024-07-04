@@ -4,7 +4,7 @@ import { fakeFetchCryptoData, fetchAssets } from "../api";
 import { CryptoAssetsData, CryptoType } from "../data";
 import { percentDifference } from "../utils";
 
-interface CryptoContextType {
+export interface CryptoContextType {
   loading: boolean;
   crypto: any[];
   assets: any[];

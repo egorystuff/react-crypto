@@ -6,7 +6,7 @@ import { AppContent } from "./AppContent";
 import { AppFooter } from "./AppFooter";
 import CryptoContext from "../../context/crypto-context";
 
-export const AppLayout = () => {
+export const AppLayout: React.FC = () => {
   const { loading } = useContext(CryptoContext);
 
   if (loading) {

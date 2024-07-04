@@ -9,6 +9,6 @@ const contentStyle: React.CSSProperties = {
   padding: "1rem",
 };
 
-export const AppContent = () => {
+export const AppContent: React.FC = () => {
   return <Content style={contentStyle}>Content</Content>;
 };

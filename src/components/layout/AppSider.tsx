@@ -3,7 +3,7 @@ import Sider from "antd/es/layout/Sider";
 import { Card, List, Space, Statistic, Tag, Typography } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import { capitalize } from "../../utils";
-import CryptoContext from "../../context/crypto-context";
+import CryptoContext, { CryptoContextType } from "../../context/crypto-context";
 
 // -------------------------------------------------------------------------------------------
 
@@ -16,10 +16,8 @@ const siderStyle: React.CSSProperties = {
 
 // -------------------------------------------------------------------------------------------
 
-export const AppSider = () => {
-  const { assets } = useContext(CryptoContext);
-
-  // -------------------------------------------------------------------------------------------
+export const AppSider: React.FC = () => {
+  const { assets } = useContext<CryptoContextType>(CryptoContext);
 
   return (
     <Sider width='25%' style={siderStyle}>

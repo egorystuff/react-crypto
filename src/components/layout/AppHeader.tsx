@@ -26,7 +26,7 @@ export const AppHeader: React.FC = () => {
   const [select, setSelect] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
   const [coin, setCoin] = useState<CryptoType | null>(null);
-  const [drawer, setDrawer] = useState<boolean>(true);
+  const [drawer, setDrawer] = useState<boolean>(false);
 
   useEffect(() => {
     const keypress = (e: KeyboardEvent) => {
@@ -71,7 +71,7 @@ export const AppHeader: React.FC = () => {
       </Modal>
 
       <Drawer title='Basic Drawer' onClose={() => setDrawer(false)} open={drawer} destroyOnClose>
-        <AddAssetForm />
+        <AddAssetForm onClose={() => setDrawer(false)} />
       </Drawer>
     </Header>
   );

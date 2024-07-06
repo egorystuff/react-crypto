@@ -1,21 +1,49 @@
 import React, { useContext, useState } from "react";
-import { Button, DatePicker, Divider, Flex, Form, FormProps, InputNumber, Select, Space, Typography } from "antd";
+import { Button, DatePicker, Divider, Form, FormProps, InputNumber, Result, Select, Space } from "antd";
 import { CryptoType } from "../data";
 import CryptoContext, { CryptoContextType } from "../context/crypto-context";
+import { CoinInfo } from "./CoinInfo";
 
 // -------------------------------------------------------------------------------------------
 
 type FieldType = {
-  username?: string;
-  password?: string;
-  remember?: string;
+  id: string;
+  amount: number;
+  price: number;
+  date: Date;
 };
 
 // -------------------------------------------------------------------------------------------
 
-export const AddAssetForm: React.FunctionComponent = () => {
-  const { crypto } = useContext<CryptoContextType>(CryptoContext);
+export const AddAssetForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const { crypto, addAssets } = useContext<CryptoContextType>(CryptoContext);
   const [coin, setCoin] = useState<CryptoType | null>(null);
+  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [form] = Form.useForm();
+  const assetRef = React.useRef<{ id: string; amount: number; price: number; date: Date } | null>(null);
+
+  const validateMessages = {
+    required: "${label} is required!",
+    types: { number: "${label} is not a valid number!" },
+    number: { range: "${label} must be between ${min} and ${max}" },
+  };
+
+  // -------------------------------------------------------------------------------------------
+
+  if (submitted) {
+    return (
+      <Result
+        status='success'
+        title='New Asset Added'
+        subTitle={`Added ${assetRef.current?.amount} of ${coin?.name} by price of ${assetRef.current?.price} $`}
+        extra={[
+          <Button type='primary' key='close' onClick={onClose}>
+            Close
+          </Button>,
+        ]}
+      />
+    );
+  }
 
   // -------------------------------------------------------------------------------------------
 
@@ -43,6 +71,15 @@ export const AddAssetForm: React.FunctionComponent = () => {
   // -------------------------------------------------------------------------------------------
 
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+    setSubmitted(true);
+    const newAsset = {
+      id: coin.id,
+      amount: values.amount,
+      price: values.price,
+      date: new Date(),
+    };
+    assetRef.current = newAsset;
+    addAssets(newAsset);
     console.log("Success:", values);
   };
 
@@ -52,27 +89,25 @@ export const AddAssetForm: React.FunctionComponent = () => {
 
   return (
     <Form
+      form={form}
       name='basic'
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 10 }}
       style={{ maxWidth: 600 }}
-      initialValues={{}}
+      initialValues={{ price: +coin.price.toFixed(2) }}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}>
-      <Flex align='center'>
-        <img style={{ width: 40, height: 40, marginRight: 10 }} src={coin?.icon} alt={coin?.name} />
-        <Typography.Title style={{ margin: 0 }} level={2}>
-          ({coin?.symbol}) {coin?.name}
-        </Typography.Title>
-      </Flex>
+      onFinishFailed={onFinishFailed}
+      validateMessages={validateMessages}>
+      <CoinInfo coin={coin} />
 
       <Divider />
 
-      <Form.Item
-        label='Amount'
-        name='amount'
-        rules={[{ required: true, type: "number", min: 0, message: "Please input your username!" }]}>
-        <InputNumber style={{ width: "100%" }} />
+      <Form.Item label='Amount' name='amount' rules={[{ required: true, type: "number", min: 0 }]}>
+        <InputNumber
+          style={{ width: "100%" }}
+          placeholder='Enter coin amount'
+          onChange={(value) => form.setFieldsValue({ total: +(Number(value) * coin.price).toFixed(2) })}
+        />
       </Form.Item>
 
       <Form.Item label='Date & Time' name='date'>

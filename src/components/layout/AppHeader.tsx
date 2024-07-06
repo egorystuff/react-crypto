@@ -4,6 +4,7 @@ import { Header } from "antd/es/layout/layout";
 import CryptoContext, { CryptoContextType } from "../../context/crypto-context";
 import { CoinInfoModal } from "../CoinInfoModal";
 import { AddAssetForm } from "../AddAssetForm";
+import { CryptoType } from "../../data";
 
 // -------------------------------------------------------------------------------------------
 
@@ -24,8 +25,8 @@ export const AppHeader: React.FC = () => {
 
   const [select, setSelect] = useState<boolean>(false);
   const [modal, setModal] = useState<boolean>(false);
-  const [coin, setCoin] = useState<null>(null);
-  const [drawer, setDrawer] = useState<boolean>(false);
+  const [coin, setCoin] = useState<CryptoType | null>(null);
+  const [drawer, setDrawer] = useState<boolean>(true);
 
   useEffect(() => {
     const keypress = (e: KeyboardEvent) => {
@@ -69,7 +70,7 @@ export const AppHeader: React.FC = () => {
         <CoinInfoModal coin={coin} />
       </Modal>
 
-      <Drawer title='Basic Drawer' onClose={() => setDrawer(false)} open={drawer}>
+      <Drawer title='Basic Drawer' onClose={() => setDrawer(false)} open={drawer} destroyOnClose>
         <AddAssetForm />
       </Drawer>
     </Header>

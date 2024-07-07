@@ -40,6 +40,7 @@ export type CryptoAssetsData = {
   totalProfit?: number;
   grow?: boolean;
   totalAmount?: number;
+  name?: string;
   id: string;
   amount: number;
   price: number;
@@ -660,7 +661,7 @@ export const cryptoData: CryptoData = {
 export const cryptoAssets: CryptoAssetsData[] = [
   {
     id: "bitcoin",
-    amount: 0.02,
+    amount: 0.2,
     price: 26244,
     date: new Date(),
   },

@@ -23,15 +23,16 @@ export function CryptoContextProvider({ children }: { children: ReactNode }) {
   const [crypto, setCrypto] = useState<CryptoType[]>([]);
   const [assets, setAssets] = useState<CryptoAssetsData[]>([]);
 
-  const mapAssets = (assets, result) => {
-    return assets.map((asset) => {
-      const coin = result.find((c) => c.id === asset.id);
+  const mapAssets = (assets: CryptoAssetsData[], result: CryptoType[]) => {
+    return assets.map((asset: CryptoAssetsData) => {
+      const coin = result.find((c: CryptoType) => c.id === asset.id);
 
       return {
         grow: asset.price < (coin?.price ?? 0),
         growPercent: percentDifference(coin?.price ?? 0, asset.price),
         totalAmount: asset.amount * (coin?.price ?? 0),
         totalProfit: asset.amount * (asset.price - (coin?.price ?? 0) - asset.amount * asset.price),
+        name: coin?.name,
         ...asset,
       };
     });

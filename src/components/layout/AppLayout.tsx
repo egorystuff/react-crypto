@@ -6,6 +6,10 @@ import { AppContent } from "./AppContent";
 import { AppFooter } from "./AppFooter";
 import CryptoContext from "../../context/crypto-context";
 
+const layoutStyle: React.CSSProperties = {
+  display: "flex",
+};
+
 export const AppLayout: React.FC = () => {
   const { loading } = useContext(CryptoContext);
 
@@ -17,7 +21,7 @@ export const AppLayout: React.FC = () => {
     <Layout>
       <AppHeader />
 
-      <Layout>
+      <Layout style={layoutStyle}>
         <AppSider />
         <AppContent />
       </Layout>
